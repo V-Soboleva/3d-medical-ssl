@@ -1,1 +1,1 @@
-# 3d_medical_ssl
+# 3d-medical-ssl
