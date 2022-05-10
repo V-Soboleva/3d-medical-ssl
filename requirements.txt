@@ -1,0 +1,4 @@
+scikit-learn==1.0.2
+connectome>=0.1.0
+deep-pipe==0.1.1
+pytorch-lightning==1.6.1
