@@ -2,7 +2,7 @@
 
 ## Requirements
 
-An optional first step, which will make everything easier
+An optional first step to create a python environment for the project
 ```
 conda create --name 3d-medical-ssl python=3.8
 conda activate 3d-medical-ssl
