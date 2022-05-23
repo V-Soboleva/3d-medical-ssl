@@ -7,9 +7,9 @@ from pytorch_lightning.callbacks.finetuning import BackboneFinetuning
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.loggers import TensorBoardLogger
 
-from pixelwise_ssl.data.pancreas import PancreasDataset
-from pixelwise_ssl.nn import UNet3d, ConvBlock3d
-from pixelwise_ssl.functional import compute_dice_loss
+from medical_ssl_3d.data.pancreas import PancreasDataset
+from medical_ssl_3d.nn import UNet3d, ConvBlock3d
+from medical_ssl_3d.functional import compute_dice_loss
 
 
 class SupervisedUNet3d(pl.LightningModule):
