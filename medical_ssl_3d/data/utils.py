@@ -1,5 +1,6 @@
 import typing as tp
 import numpy as np
+from dpipe.im.box import mask2bounding_box as mask_to_box
 
 
 def normalize_axis(axis, ndim):
