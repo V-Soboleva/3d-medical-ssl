@@ -1,8 +1,9 @@
 import numpy as np
 import typing as tp
 from connectome import Transform, optional, impure
-from ..utils import get_random_patches, get_image_from_patches
 from dpipe.io import load
+
+from medical_ssl_3d.data.patches import get_random_patches, get_image_from_patches
 
 
 class CreateJigLabel(Transform):
@@ -12,7 +13,7 @@ class CreateJigLabel(Transform):
     @impure
     def label(_num_permutations):
         # along all possible permiutations we leave num_permutations
-        return np.random.randint(0, _num_permutations) 
+        return np.random.randint(0, _num_permutations)
 
 
 class Permute(Transform):

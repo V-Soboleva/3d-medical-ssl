@@ -3,6 +3,9 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 
+from medical_ssl_3d.functional import Transform2D
+
+
 def pixelwise_loss(
         image: torch.Tensor,
         model: nn.Module,
