@@ -36,7 +36,7 @@ def pixelwise_loss(
     
     ft = model(transform(image).unsqueeze(0)).squeeze(0)
 
-    roi = transform(roi.unsqueeze(0)).squeeze(0)
+    roi = transform(roi.unsqueeze(0)).squeeze(0) > 0.5
 
     loss = torch.tensor(0., requires_grad=True).to(ft)
 
