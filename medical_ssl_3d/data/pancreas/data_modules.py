@@ -60,7 +60,7 @@ class PancreasDataset(pl.LightningDataModule):
         self.test_dataset = TorchDataset(val_ids, preprocessed._compile('image'))
 
     def train_dataloader(self):
-        sampler = RandomSampler(self.train_dataset, num_samples=self.num_images_per_epoch)
+        sampler = RandomSampler(self.train_dataset, num_samples=self.num_images_per_epoch, replacement=True)
         return DataLoader(self.train_dataset, self.batch_size, sampler=sampler, num_workers=self.num_workers)
 
     def val_dataloader(self):
