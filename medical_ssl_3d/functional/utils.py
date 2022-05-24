@@ -2,6 +2,18 @@ import typing as tp
 import numpy as np
 import random
 import torch
+from torchio import RandomElasticDeformation
+
+
+def random_elasticdeform(x, seed=0, num_control_points=10, max_displacement=20, **kwargs):
+    transform = RandomElasticDeformation(
+        num_control_points=num_control_points,
+        locked_borders=0,
+        max_displacement=max_displacement,
+        **kwargs
+    )
+    torch.manual_seed(seed)
+    return transform(x)
 
 
 class Transform2D(tp.NamedTuple):
@@ -12,6 +24,7 @@ class Transform2D(tp.NamedTuple):
     scale: float
     vshift: float
     hshift: float
+    elasticdeform_seed: int
 
     @classmethod
     def random(cls, dims: tp.Tuple[int, int], shape: tp.Union[int, tp.Sequence[int]], vflip_p: float, hflip_p: float,
@@ -22,15 +35,16 @@ class Transform2D(tp.NamedTuple):
         scale = random.uniform(1, max_scale)
         vshift = random.random() * max_shift
         hshift = random.random() * max_shift
+        elasticdeform_seed = np.random.randint(2147483647)
 
-
-        return cls(dims, vflip, hflip, angle, scale, vshift, hshift, crop_box)
+        return cls(dims, vflip, hflip, angle, scale, vshift, hshift, elasticdeform_seed)
 
     def __call__(
             self,
             x: torch.Tensor,
             fill_value: tp.Optional[float] = None,
-            dims: tp.Optional[tp.Tuple[int, int]] = None
+            dims: tp.Optional[tp.Tuple[int, int]] = None,
+            **kwargs
     ) -> torch.Tensor:
         """Apply 2D transformation in ``dims`` plane.
 
@@ -68,7 +82,6 @@ class Transform2D(tp.NamedTuple):
 
         x = torch.movedim(x, (-2, -1), dims)
 
-                      
+        x = random_elasticdeform(x, seed=self.elasticdeform_seed, **kwargs)
+
         return x
-
-
