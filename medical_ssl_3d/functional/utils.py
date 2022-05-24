@@ -83,6 +83,7 @@ class Transform2D(tp.NamedTuple):
 
         x = torch.movedim(x, (-2, -1), dims)
 
-        x = random_elasticdeform(x, seed=self.elasticdeform_seed, **kwargs)
+        device = x.device
+        x = random_elasticdeform(x.cpu(), seed=self.elasticdeform_seed, **kwargs).to(device)
 
         return x
