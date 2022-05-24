@@ -69,7 +69,7 @@ def main(args):
     pl.seed_everything(42, workers=True)
     data_module = PancreasDataset(
         data_dir='/shared/data/pancreas_tumor/Task07_Pancreas',
-        cache_dir='/shared/projects/pixelwise-ssl/cache/pancreas',
+        cache_dir='/shared/projects/aorta/cache/pancreas',
         train_size=1.0,
         batch_size=None,
         num_images_per_epoch=args.num_images_per_epoch,
