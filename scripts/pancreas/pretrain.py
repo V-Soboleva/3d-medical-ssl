@@ -39,7 +39,6 @@ class UnsupervisedUNet3d(pl.LightningModule):
         transform = Transform2D.random(
             # randomly choose plane (vdim, hdim) in which random transformation is applied
             dims=random.choice([(-3, -2), (-3, -1), (-2, -1)]),
-            shape=image.shape,
             vflip_p=hparams.vflip_p,
             hflip_p=hparams.hflip_p,
             max_angle=hparams.max_angle,
