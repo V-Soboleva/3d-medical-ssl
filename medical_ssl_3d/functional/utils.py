@@ -3,6 +3,7 @@ import numpy as np
 import random
 import torch
 from torchio import RandomElasticDeformation
+from dpipe.im.box import mask2bounding_box as mask_to_box
 
 
 def random_elasticdeform(x, seed=0, num_control_points=10, max_displacement=20, **kwargs):

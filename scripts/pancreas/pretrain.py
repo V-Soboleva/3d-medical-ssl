@@ -88,7 +88,7 @@ def main(args):
     torch.save(model.backbone.state_dict(), f'{logger.log_dir}/backbone.pt')
 
 
-if name == '__main__':
+if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('--name', required=True)
     parser.add_argument('--num_images_per_epoch', default=300, type=int)
@@ -105,3 +105,5 @@ if name == '__main__':
     parser.add_argument('--accelerator', default='gpu')
     parser.add_argument('--devices', default=None)
     args = parser.parse_args()
+
+    main(args)
