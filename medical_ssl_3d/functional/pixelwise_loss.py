@@ -33,22 +33,18 @@ def pixelwise_loss(
 
     _grid = torch.stack(torch.meshgrid(*map(torch.arange, image.shape[1:]))).to(dtype=torch.float32)  # (3, h, w, d)
     grid = transform(_grid)
-    
+
     ft = model(transform(image).unsqueeze(0)).squeeze(0)
 
     roi = transform(roi.unsqueeze(0)).squeeze(0) > 0.5
 
     loss = torch.tensor(0., requires_grad=True).to(ft)
 
-    neg_mask = (torch.norm(_grid - grid, dim=0) >= min_neg_distance_vxl) 
+    neg_mask = (torch.norm(_grid - grid, dim=0) >= min_neg_distance_vxl)
     neg_mask = neg_mask.to(device=tf.device)
-    
-    print(neg_mask.shape)
-    
+
     similarity = torch.cosine_similarity(tf, ft, dim=0)
-    
-    print(similarity.shape)
-    
+
     neg_sim = torch.where(neg_mask[roi], similarity[roi], torch.tensor(float('-inf')).to(similarity))
     cross_entropy = -torch.log_softmax(torch.cat((similarity[roi], neg_sim)) / temperature, dim=0)[0]
 
