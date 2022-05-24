@@ -8,8 +8,8 @@ from torchio import RandomElasticDeformation
 def random_elasticdeform(x, seed=0, num_control_points=10, max_displacement=20, **kwargs):
     transform = RandomElasticDeformation(
         num_control_points=num_control_points,
-        locked_borders=0,
         max_displacement=max_displacement,
+        locked_borders=2,  # displacement of control points at the border of the image will also be set to 0.
         **kwargs
     )
     torch.manual_seed(seed)
@@ -27,7 +27,7 @@ class Transform2D(tp.NamedTuple):
     elasticdeform_seed: int
 
     @classmethod
-    def random(cls, dims: tp.Tuple[int, int], shape: tp.Union[int, tp.Sequence[int]], vflip_p: float, hflip_p: float,
+    def random(cls, dims: tp.Tuple[int, int], vflip_p: float, hflip_p: float,
                max_angle: float, max_scale: float, max_shift: float):
         vflip = random.random() < vflip_p
         hflip = random.random() < hflip_p
