@@ -23,12 +23,13 @@ class Permute(Transform):
     _permutations_path: str = 'permutations.json'
 
     @impure
-    def image(image, /, label, _permutations_path, _patch_size, _patches_per_side):
+    def image(image, /, label, _permutations_path, _patches_per_side, jitter):
+        im = image[0].copy()
         permutations = load(_permutations_path)
-        patches = get_random_patches(image, _patch_size, _patches_per_side)
+        patches = get_random_patches(im, jitter, _patches_per_side)
         permut_patches = patches[np.array(permutations[label])]
         new_image = get_image_from_patches(permut_patches, _patches_per_side)
 
-        return new_image
+        return np.expand_dims(new_image, axis=0)
 
     cancer = optional(image)

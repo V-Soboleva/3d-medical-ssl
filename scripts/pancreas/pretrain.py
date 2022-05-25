@@ -55,7 +55,7 @@ class UnsupervisedUNet3d(pl.LightningModule):
                 max_angle=hparams.max_angle,
                 max_scale=hparams.max_scale,
                 max_shift=hparams.max_shift,
-                elastic_p=1
+                elastic_p=0
             )
         ]
         return pixelwise_loss(image, self, transforms, hparams.temperature, hparams.min_neg_distance_vxl, roi)
@@ -81,7 +81,7 @@ def main(args):
     pl.seed_everything(42, workers=True)
     data_module = PancreasDataset(
         data_dir='/shared/data/pancreas_tumor/Task07_Pancreas',
-        cache_dir='/shared/projects/aorta/cache/pancreas',
+        cache_dir='/shared/projects/pixelwise-ssl/cache/pancreas',
         train_size=1.0,
         batch_size=None,
         num_images_per_epoch=args.num_images_per_epoch,

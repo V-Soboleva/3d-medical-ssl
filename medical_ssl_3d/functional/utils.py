@@ -6,11 +6,12 @@ from torchio import RandomElasticDeformation
 from dpipe.im.box import mask2bounding_box as mask_to_box
 
 
-def random_elasticdeform(x, seed=0, num_control_points=10, max_displacement=20, **kwargs):
+def random_elasticdeform(x, seed=0, num_control_points=10, max_displacement=(10, 10, 0), **kwargs):
     transform = RandomElasticDeformation(
         num_control_points=num_control_points,
         max_displacement=max_displacement,
         locked_borders=2,  # displacement of control points at the border of the image will also be set to 0.
+        image_interpolation='nearest',
         **kwargs
     )
     torch.manual_seed(seed)

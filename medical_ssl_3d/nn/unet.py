@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from dpipe import layers
 
 from .blocks import DoubleConvBlock3d, ResBlock3d
-from .encoder import Encoder3D
+from .encoder import Encoder3d
 
 
 class UNet3d(nn.Module):
@@ -59,7 +59,7 @@ class UNet3d_v2(nn.Module):
 
         assert len(encoder_channels) == len(decoder_channels)
 
-        self.encoder = Encoder3D(in_channels, encoder_channels, residual=residual)
+        self.encoder = Encoder3d(in_channels, encoder_channels, residual=residual)
 
         if residual:
             conv_block = lambda c_in, c_out: ResBlock3d(c_in, c_out, kernel_size=3, padding=1)
@@ -72,7 +72,6 @@ class UNet3d_v2(nn.Module):
             conv_block(down_c + left_c, out_c)
             for down_c, left_c, out_c in zip(decoder_channels, encoder_channels[::-1], decoder_channels[1:])
         ])
-
 
     def forward(self, x):
         x, encoder_fmaps = self.encoder(x, return_encoder_fmaps=True)

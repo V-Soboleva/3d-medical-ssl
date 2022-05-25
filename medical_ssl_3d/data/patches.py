@@ -1,16 +1,17 @@
 import numpy as np
 
 
-def get_random_patches(image, patch_size, patches_per_side): 
+def get_random_patches(image, jitter, patches_per_side): 
     h, w, d = image.shape
-    patch_size = np.array(patch_size)
-    h_patch, w_patch, d_patch = patch_size
-    
-    assert (patch_size * patches_per_side < image.shape).all()
+    patch_overlap = -jitter if jitter < 0 else 0
 
-    h_grid = h // patches_per_side
-    w_grid = w // patches_per_side
-    d_grid = d // patches_per_side
+    h_grid = (h - patch_overlap) // patches_per_side
+    w_grid = (w - patch_overlap) // patches_per_side
+    d_grid = (d - patch_overlap) // patches_per_side
+
+    h_patch = h_grid - jitter
+    w_patch = w_grid - jitter
+    d_patch = d_grid - jitter
 
     patches = []
     for i in range(patches_per_side):
@@ -56,16 +57,3 @@ def get_image_from_patches(patches, patches_per_side):
                                                                     k * patches_per_side ** 0]
     return new_image
 
-
-def get_random_point(image, crop_size):
-    h, w, d = crop_size[0], crop_size[1], crop_size[2]
-    h_old, w_old, d_old = image.shape[0], image.shape[1], image.shape[2]
-    d = min(d, d_old)
-
-    # random crop
-    x = np.random.randint(0, 1 + h_old - h)
-    y = np.random.randint(0, 1 + w_old - w)
-    z = np.random.randint(0, 1 + d_old - d)
-
-
-    return [x, y, z]
