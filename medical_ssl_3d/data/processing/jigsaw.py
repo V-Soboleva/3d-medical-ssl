@@ -18,15 +18,15 @@ class CreateJigLabel(Transform):
 
 class Permute(Transform):
     __inherit__ = True
-    _patch_size: tp.Sequence[int]
+    _jitter: int
     _patches_per_side: int = 3
     _permutations_path: str = 'permutations.json'
 
     @impure
-    def image(image, /, label, _permutations_path, _patches_per_side, jitter):
+    def image(image, /, label, _permutations_path, _patches_per_side, _jitter):
         im = image[0].copy()
         permutations = load(_permutations_path)
-        patches = get_random_patches(im, jitter, _patches_per_side)
+        patches = get_random_patches(im, _jitter, _patches_per_side)
         permut_patches = patches[np.array(permutations[label])]
         new_image = get_image_from_patches(permut_patches, _patches_per_side)
 
