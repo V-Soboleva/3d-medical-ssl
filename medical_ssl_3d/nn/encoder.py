@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from .blocks import DoubleConvBlock3d, ResBlock3d
 
 
-class Encoder3D(nn.Module):
+class Encoder3d(nn.Module):
     def __init__(self, in_channels, encoder_channels, residual=False):
         """Encoder for UNet.
 
