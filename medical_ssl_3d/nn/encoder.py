@@ -27,14 +27,16 @@ class Encoder3D(nn.Module):
         self.downsample = nn.MaxPool3d(kernel_size=2, ceil_mode=True)
         self.out_channels = encoder_channels[-1]
 
-    def forward(self, x, return_levels_outputs=False):
-        levels_outputs = []
-        for level in self.encoder_blocks:
-            x = level(x)
-            levels_outputs.append(x)
+    def forward(self, x, return_encoder_fmaps=False):
+        x = self.first_conv(x)
+
+        encoder_fmaps = []
+        for block in self.encoder_blocks:
+            x = block(x)
+            encoder_fmaps.insert(0, x)
             x = self.downsample(x)
 
-        if return_levels_outputs:
-            return x, levels_outputs
+        if return_encoder_fmaps:
+            return x, encoder_fmaps
 
         return x
