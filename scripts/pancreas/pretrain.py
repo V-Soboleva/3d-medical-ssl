@@ -36,16 +36,29 @@ class UnsupervisedUNet3d(pl.LightningModule):
 
     def _compute_pixelwise_loss(self, image, roi):
         hparams = self.hparams
-        transform = Transform2D.random(
-            # randomly choose plane (vdim, hdim) in which random transformation is applied
-            dims=random.choice([(-3, -2), (-3, -1), (-2, -1)]),
-            vflip_p=hparams.vflip_p,
-            hflip_p=hparams.hflip_p,
-            max_angle=hparams.max_angle,
-            max_scale=hparams.max_scale,
-            max_shift=hparams.max_shift,
-        )
-        return pixelwise_loss(image, self, transform, hparams.temperature, hparams.min_neg_distance_vxl, roi)
+        transforms = [
+            Transform2D.random(
+                # randomly choose plane (vdim, hdim) in which random transformation is applied
+                dims=random.choice([(-3, -2), (-3, -1), (-2, -1)]),
+                vflip_p=hparams.vflip_p,
+                hflip_p=hparams.hflip_p,
+                max_angle=hparams.max_angle,
+                max_scale=hparams.max_scale,
+                max_shift=hparams.max_shift,
+                elastic_p=0
+            ),
+            Transform2D.random(
+                # randomly choose plane (vdim, hdim) in which random transformation is applied
+                dims=random.choice([(-3, -2), (-3, -1), (-2, -1)]),
+                vflip_p=hparams.vflip_p,
+                hflip_p=hparams.hflip_p,
+                max_angle=hparams.max_angle,
+                max_scale=hparams.max_scale,
+                max_shift=hparams.max_shift,
+                elastic_p=1
+            )
+        ]
+        return pixelwise_loss(image, self, transforms, hparams.temperature, hparams.min_neg_distance_vxl, roi)
 
     def training_step(self, batch, batch_idx):
         image = batch

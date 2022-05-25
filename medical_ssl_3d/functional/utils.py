@@ -25,20 +25,22 @@ class Transform2D(tp.NamedTuple):
     scale: float
     vshift: float
     hshift: float
+    elastic: bool
     elasticdeform_seed: int
 
     @classmethod
     def random(cls, dims: tp.Tuple[int, int], vflip_p: float, hflip_p: float,
-               max_angle: float, max_scale: float, max_shift: float):
+               max_angle: float, max_scale: float, max_shift: float, elastic_p : float):
         vflip = random.random() < vflip_p
         hflip = random.random() < hflip_p
         angle = random.uniform(-max_angle, max_angle)
         scale = random.uniform(1, max_scale)
         vshift = random.random() * max_shift
         hshift = random.random() * max_shift
+        elastic = random.random() < elastic_p
         elasticdeform_seed = np.random.randint(2147483647)
 
-        return cls(dims, vflip, hflip, angle, scale, vshift, hshift, elasticdeform_seed)
+        return cls(dims, vflip, hflip, angle, scale, vshift, hshift, elastic, elasticdeform_seed)
 
     def __call__(
             self,
@@ -84,6 +86,7 @@ class Transform2D(tp.NamedTuple):
         x = torch.movedim(x, (-2, -1), dims)
 
         device = x.device
-        x = random_elasticdeform(x.cpu().detach(), seed=self.elasticdeform_seed, **kwargs).to(device)
+        if self.elastic:
+            x = random_elasticdeform(x.cpu().detach(), seed=self.elasticdeform_seed, **kwargs).to(device)
 
         return x
