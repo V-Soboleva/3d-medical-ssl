@@ -57,7 +57,7 @@ class UnsupervisedUNet3d(pl.LightningModule):
         output = self.forward(images)
         pred_labels = torch.argmax(output, dim=1)
 
-        acc = torch.mean(pred_labels == labels)
+        acc = torch.mean(torch.tensor(pred_labels == label, dtype=torch.float))
         self.log('train/accuracy', acc, on_step=False, on_epoch=True)
 
 
