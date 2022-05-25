@@ -3,6 +3,7 @@ from torch import nn
 import torch.nn.functional as F
 
 from .blocks import DoubleConvBlock3d, ResBlock3d
+from .encoder import Encoder3D
 
 
 class UNet3d(nn.Module):
@@ -49,3 +50,40 @@ class UNet3d(nn.Module):
             x = block(x)
 
         return x
+
+
+class UNet3d_v2(nn.Module):
+    def __init__(self, in_channels, encoder_channels, decoder_channels, residual=False) -> None:
+        super().__init__()
+        
+        assert len(encoder_channels) == len(decoder_channels)
+
+        self.encoder = Encoder3D(in_channels, encoder_channels, residual=residual)
+
+        if residual:
+            conv_block = lambda c_in, c_out: ResBlock3d(c_in, c_out, kernel_size=3, padding=1)
+        else:
+            conv_block = lambda c_in, c_out: DoubleConvBlock3d(c_in, c_out, kernel_size=3, padding=1
+
+        self.bridge = conv_block(encoder_channels[-1], decoder_channels[0])
+
+        self.decoder_blocks = nn.ModuleList([
+            conv_block(down_c + left_c, out_c)
+            for down_c, left_c, out_c in zip(decoder_channels, encoder_channels[::-1], decoder_channels[1:])
+        ])
+
+    @staticmethod
+    def _merge(left, down):
+        return torch.add(*layers.interpolate_to_left(left, down, 'trilinear'))
+
+    def forward(self, x):
+        x, encoder_levels_outputs = self.encoder(x, return_levels_outputs=True)
+        x = self.bridge(x)
+        for output, level in zip(encoder_levels_outputs, self.decoder_blocks):
+            x = level(self._merge(output, self.upsample(x)))
+
+        return x
+
+
+    
+
