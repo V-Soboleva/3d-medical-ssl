@@ -7,10 +7,7 @@ import pytorch_lightning as pl
 from pytorch_lightning.loggers import TensorBoardLogger
 
 from medical_ssl_3d.data.pancreas import PancreasDataset
-from medical_ssl_3d.nn import Encoder3d, ConvBlock3d, Normalize
-from medical_ssl_3d.functional import (
-    Transform2D, pixelwise_loss
-)
+from medical_ssl_3d.nn import Encoder3d
 
 
 class UnsupervisedUNet3d(pl.LightningModule):
@@ -25,11 +22,11 @@ class UnsupervisedUNet3d(pl.LightningModule):
         self.head = nn.Sequential(
             nn.AdaptiveAvgPool3d((1, 1, 1)),
             nn.Flatten(1, -1),
-            nn.Dropout(p=0.1)
+            nn.Dropout(p=0.1),
             nn.Linear(512, 1024),
             nn.ReLU(),
             nn.Dropout(p=0.1),
-            nn.Linear(1024, 1000)
+            nn.Linear(1024, 1000),
         )
         self.save_hyperparameters(hparams)
         self.automatic_optimization = False

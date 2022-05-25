@@ -56,7 +56,7 @@ class PancreasDataset(pl.LightningDataModule):
                 CreateRotationLabel(),
                 Rotate(),
             )._compile(['image', 'label'])
-        elif self.purpose = 'jigsaw':
+        elif self.purpose == 'jigsaw':
             train_pipeline = Chain(
                 preprocessed,
                 CreateJigLabel(num_permutations=1000),
