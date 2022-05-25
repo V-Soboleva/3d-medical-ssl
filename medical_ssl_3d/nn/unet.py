@@ -64,7 +64,7 @@ class UNet3d_v2(nn.Module):
         if residual:
             conv_block = lambda c_in, c_out: ResBlock3d(c_in, c_out, kernel_size=3, padding=1)
         else:
-            conv_block = lambda c_in, c_out: DoubleConvBlock3d(c_in, c_out, kernel_size=3, padding=1
+            conv_block = lambda c_in, c_out: DoubleConvBlock3d(c_in, c_out, kernel_size=3, padding=1)
 
         self.bridge = conv_block(encoder_channels[-1], decoder_channels[0])
 
