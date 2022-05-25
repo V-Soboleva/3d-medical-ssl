@@ -1,6 +1,7 @@
 import torch
 from torch import nn
 import torch.nn.functional as F
+from dpipe import layers
 
 from .blocks import DoubleConvBlock3d, ResBlock3d
 from .encoder import Encoder3D
@@ -55,7 +56,7 @@ class UNet3d(nn.Module):
 class UNet3d_v2(nn.Module):
     def __init__(self, in_channels, encoder_channels, decoder_channels, residual=False) -> None:
         super().__init__()
-        
+
         assert len(encoder_channels) == len(decoder_channels)
 
         self.encoder = Encoder3D(in_channels, encoder_channels, residual=residual)
@@ -72,15 +73,14 @@ class UNet3d_v2(nn.Module):
             for down_c, left_c, out_c in zip(decoder_channels, encoder_channels[::-1], decoder_channels[1:])
         ])
 
-    @staticmethod
-    def _merge(left, down):
-        return torch.add(*layers.interpolate_to_left(left, down, 'trilinear'))
 
     def forward(self, x):
-        x, encoder_levels_outputs = self.encoder(x, return_levels_outputs=True)
+        x, encoder_fmaps = self.encoder(x, return_encoder_fmaps=True)
         x = self.bridge(x)
-        for output, level in zip(encoder_levels_outputs, self.decoder_blocks):
-            x = level(self._merge(output, self.upsample(x)))
+        for fmap, block in zip(encoder_fmaps, self.decoder_blocks):
+            x = F.interpolate(x, size=fmap.shape[2:], mode='trilinear', align_corners=False)
+            x = torch.cat((x, fmap), dim=1)
+            x = block(x)
 
         return x
 
