@@ -22,7 +22,7 @@ permutations_path = '/homes/vsoboleva/ssl/configs/jigsaw/permutations.json'
 
 class PancreasDataset(pl.LightningDataModule):
     def __init__(self, data_dir, cache_dir, train_size, num_images_per_epoch, return_masks=True,
-    random_state=42, batch_size=1, num_workers=0, purpose='default'):
+                 random_state=42, batch_size=1, num_workers=0, purpose='default'):
         super().__init__()
 
         self.data_dir = Path(data_dir)
@@ -43,7 +43,7 @@ class PancreasDataset(pl.LightningDataModule):
             Pancreas(data_dir=self.data_dir),
             Apply(image=lambda x: np.expand_dims(x, axis=0)),
             Transform(__inherit__=True, cropping_box=lambda image: mask_to_box(np.any(image > 0, axis=0))),
-            CropToBox(axis=(-3, -2, -1)), 
+            CropToBox(axis=(-3, -2, -1)),
             ZoomToShape(shape=IMAGE_SIZE, axis=(-3, -2, -1)),
             Apply(image=partial(scale_hu, window_hu=(-200, 300))),
             Apply(image=np.float16),
@@ -55,16 +55,18 @@ class PancreasDataset(pl.LightningDataModule):
                 preprocessed,
                 CreateRotationLabel(),
                 Rotate(),
+                Apply(image=np.float32),
             )._compile(['image', 'label'])
         elif self.purpose == 'jigsaw':
             train_pipeline = Chain(
                 preprocessed,
                 CreateJigLabel(num_permutations=1000),
-                Permute(patches_per_side=3, jitter=3, permutations_path = permutations_path),
+                Permute(patches_per_side=3, jitter=3, permutations_path=permutations_path),
                 Apply(image=np.float32),
-        )._compile(['image', 'label'])
+            )._compile(['image', 'label'])
 
-        train_ids, val_ids = train_test_split(preprocessed.ids, test_size=0.3, shuffle=True, random_state=self.random_state)
+        train_ids, val_ids = train_test_split(preprocessed.ids, test_size=0.3, shuffle=True,
+                                              random_state=self.random_state)
         train_size = int(len(train_ids) * self.train_size)
         train_ids = train_ids[:train_size]
         if self.purpose == 'default':
@@ -80,14 +82,13 @@ class PancreasDataset(pl.LightningDataModule):
         else:
             self.train_dataset = TorchDataset(train_ids, train_pipeline)
 
-
     def train_dataloader(self):
         sampler = RandomSampler(self.train_dataset, num_samples=self.num_images_per_epoch, replacement=True)
         return DataLoader(self.train_dataset, self.batch_size, sampler=sampler, num_workers=self.num_workers)
 
     def val_dataloader(self):
         if self.purpose == 'default':
-            return DataLoader(self.val_dataset, self.batch_size, num_workers=self.num_workers) 
+            return DataLoader(self.val_dataset, self.batch_size, num_workers=self.num_workers)
         else:
             return None
 
