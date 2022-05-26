@@ -1,5 +1,9 @@
 # 3d-medical-ssl
 
+Final Project for Deep Learning Course at Skoltech, Spring 2022
+
+**Authors:** Vera Soboleva, Farukh Yaushev, Viacheslav Vasilev, Kezhik Kyzylool
+
 ## Requirements
 
 An optional first step to create a python environment for the project
