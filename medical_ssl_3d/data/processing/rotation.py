@@ -36,7 +36,7 @@ class Rotate(Transform):
             new_image = np.flip(im, (0, 2))
         elif label == 9:
             new_image = np.flip(np.transpose(im, (2, 1, 0)), 0)
-
-        return np.expand_dims(new_image, axis=0)
+        
+        return np.expand_dims(new_image.copy(), axis=0)
 
     cancer = optional(image)
