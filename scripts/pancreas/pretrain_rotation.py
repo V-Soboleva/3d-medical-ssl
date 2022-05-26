@@ -60,7 +60,6 @@ class UnsupervisedUNet3d(pl.LightningModule):
         acc = torch.mean(torch.tensor(pred_labels == labels, dtype=torch.float))
         self.log('train/accuracy', acc, on_step=False, on_epoch=True)
 
-
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=3e-4)
 
@@ -69,7 +68,7 @@ def main(args):
     pl.seed_everything(42, workers=True)
     data_module = PancreasDataset(
         data_dir='/shared/data/pancreas_tumor/Task07_Pancreas',
-        cache_dir='/shared/projects/pixelwise-ssl/cache/pancreas',
+        cache_dir='/shared/projects/aorta/cache/pancreas',
         train_size=1.0,
         batch_size=args.batch_size,
         num_images_per_epoch=args.num_images_per_epoch,
