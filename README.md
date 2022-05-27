@@ -28,6 +28,6 @@ pip install -e .
 
 To train the model, run
 ```
-python train.py --input-data <path_to_data>
+python train.py --name training
 ```
 
