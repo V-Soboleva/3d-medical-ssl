@@ -65,6 +65,9 @@ class PancreasDataset(pl.LightningDataModule):
         )._compile(['image', 'label'])
 
         train_ids, val_ids = train_test_split(preprocessed.ids, test_size=0.3, shuffle=True, random_state=self.random_state)
+        test_ids = val_ids[: len(val_ids) // 2]
+        val_ids = val_ids[len(val_ids) // 2 :]
+        
         train_size = int(len(train_ids) * self.train_size)
         train_ids = train_ids[:train_size]
         if self.purpose == 'default':
@@ -75,7 +78,7 @@ class PancreasDataset(pl.LightningDataModule):
                 self.train_dataset = TorchDataset(train_ids, preprocessed._compile('image'))
                 self.val_dataset = TorchDataset(val_ids, preprocessed._compile('image'))
 
-            self.test_dataset = TorchDataset(val_ids, preprocessed._compile('image'))
+            self.test_dataset = TorchDataset(test_ids, preprocessed._compile('image'))
 
         else:
             self.train_dataset = TorchDataset(train_ids, train_pipeline)
