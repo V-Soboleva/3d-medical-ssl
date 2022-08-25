@@ -88,7 +88,7 @@ def main(args):
         num_workers=args.num_workers,
         return_masks=False
     )
-    model = UnsupervisedUNet3d(args.out_channels, args)
+    model = UnsupervisedUNet3d(args)
     logger = TensorBoardLogger('tb_logs_new', name=args.name)
     trainer = pl.Trainer(
         logger=logger,

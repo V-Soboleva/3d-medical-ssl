@@ -57,7 +57,7 @@ class UnsupervisedUNet3d(pl.LightningModule):
         output = self.forward(images)
         pred_labels = torch.argmax(output, dim=1)
 
-        acc = torch.mean(torch.tensor(pred_labels == label, dtype=torch.float))
+        acc = torch.mean(torch.tensor(pred_labels == labels, dtype=torch.float))
         self.log('train/accuracy', acc, on_step=False, on_epoch=True)
 
 
@@ -83,7 +83,7 @@ def main(args):
         logger=logger,
         accelerator=args.accelerator,
         devices=args.devices,
-        max_epochs=100
+        max_epochs=500
     )
     trainer.fit(model, datamodule=data_module)
     torch.save(model.backbone.state_dict(), f'{logger.log_dir}/backbone.pt')

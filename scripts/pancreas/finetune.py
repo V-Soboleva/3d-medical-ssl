@@ -106,6 +106,7 @@ def main(args):
 
 
 if __name__ == '__main__':
+    p = '/homes/vsoboleva/3d-medical-ssl/scripts/pancreas/tb_logs_new/pretrain_jigsaw/version_0/backbone.pt'
     parser = ArgumentParser()
     parser.add_argument('--name', required=True)
     parser.add_argument('--train_size', default=1.0, type=float)
@@ -113,7 +114,7 @@ if __name__ == '__main__':
     parser.add_argument('--num_images_per_epoch', default=250, type=int)
     parser.add_argument('--num_workers', default=0, type=int)
     parser.add_argument('--residual', default=False, action='store_true')
-    parser.add_argument('--pretrained', default=None)
+    parser.add_argument('--pretrained', default=p)
     parser.add_argument('--accelerator', default='gpu')
     parser.add_argument('--devices', default=None)
     args = parser.parse_args()
